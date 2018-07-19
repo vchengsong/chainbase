@@ -68,9 +68,13 @@ file(GLOB HEADERS "include/chainbase/*.hpp")
 add_library( chainbase src/chainbase.cpp ${HEADERS} )
 target_link_libraries( chainbase  ${Boost_LIBRARIES} ${PLATFORM_LIBRARIES} )
 target_include_directories( chainbase PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"  ${Boost_INCLUDE_DIR} )
+set_target_properties( chainbase PROPERTIES PUBLIC_HEADER "${HEADERS}" )
 
 add_subdirectory( test )
 
 install(TARGETS chainbase
    LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
+   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/eosio/chainbase
+)
+install_directory_permissions( DIRECTORY ${CMAKE_INSTALL_FULL_INCLUDEDIR}/eosio/chainbase )
