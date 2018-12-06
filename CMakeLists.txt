@@ -6,24 +6,13 @@ include( GNUInstallDirs )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 
-SET(BOOST_COMPONENTS)
-LIST(APPEND BOOST_COMPONENTS thread
-                             date_time
-                             filesystem
-                             system
-                             chrono
-                             unit_test_framework
-                             locale)
-
-SET( Boost_USE_STATIC_LIBS ON CACHE STRING "ON or OFF" )
-
 IF( WIN32 )
   SET(BOOST_ROOT $ENV{BOOST_ROOT})
   set(Boost_USE_MULTITHREADED ON)
   set(BOOST_ALL_DYN_LINK OFF) # force dynamic linking for all libraries
 ENDIF(WIN32)
 
-FIND_PACKAGE(Boost 1.57 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+FIND_PACKAGE(Boost 1.57 REQUIRED COMPONENTS filesystem system iostreams)
 
 SET(PLATFORM_LIBRARIES)
 
@@ -66,8 +55,8 @@ endif()
 
 file(GLOB HEADERS "include/chainbase/*.hpp")
 add_library( chainbase src/chainbase.cpp ${HEADERS} )
-target_link_libraries( chainbase  ${Boost_LIBRARIES} ${PLATFORM_LIBRARIES} )
-target_include_directories( chainbase PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"  ${Boost_INCLUDE_DIR} )
+target_link_libraries( chainbase PUBLIC Boost::boost ${Boost_LIBRARIES} ${PLATFORM_LIBRARIES} )
+target_include_directories( chainbase PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 
 add_subdirectory( test )
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/chainbase DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR})
